@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { CreateTodoDto } from "./dto/create-todo.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { TodoEntity } from "./todo.entity";
@@ -19,5 +19,14 @@ export class TodoService{
 
   create(todo: CreateTodoDto){
     return this.todoRepository.save(todo);
+  }
+
+  async changeStatus(todoId: number) {
+    const taskToUpdate = await this.todoRepository.findOneBy({ id: todoId })
+    if(taskToUpdate === null){
+      throw new NotFoundException('No such task')
+    }
+    taskToUpdate.complete = !taskToUpdate.complete
+    return await this.todoRepository.save(taskToUpdate)
   }
 }

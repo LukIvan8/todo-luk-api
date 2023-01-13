@@ -6,4 +6,6 @@ export class TodoEntity {
   id: number;
   @Column()
   name: string;
+  @Column('boolean', {default: false})
+  complete: boolean;
 }
